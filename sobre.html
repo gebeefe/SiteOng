@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre - Mundo Verde</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-topo"></div>
+    <div id="header-container"></div>
+    
+    <main>
+        <!-- Hero Section -->
+        <section class="section" style="padding-top: 150px; padding-bottom: 5rem;">
+            <div class="container reveal">
+                <h1 class="text-oversized">Nossa<br><span class="font-serif text-accent">História</span></h1>
+            </div>
+        </section>
+
+        <!-- Content Section (Split Layout) -->
+        <section class="section-light" style="display: flex; flex-wrap: wrap; min-height: 80vh;">
+            <div class="reveal" style="flex: 1; min-width: 300px; padding: 8rem 5vw 8rem 15vw; display: flex; flex-direction: column; justify-content: center; max-width: 50%;">
+                <h2 class="section-title" style="font-size: clamp(1.75rem, 3.5vw, 2.8rem); margin-bottom: 2rem;">Sobre a ONG</h2>
+                
+                <div style="font-size: 1.1rem; line-height: 1.8; color: var(--text-dark);">
+                    <p style="margin-bottom: 1.5rem;">
+                        A <strong>ONG Mundo Verde</strong> é uma organização sem fins lucrativos dedicada à preservação ambiental e à promoção da sustentabilidade em nossa comunidade e no planeta.
+                    </p>
+                    <p style="margin-bottom: 3rem;">
+                        Desde a nossa fundação, atuamos com paixão e compromisso para enfrentar os desafios ambientais mais urgentes do nosso tempo, focando em gerar um impacto mensurável e duradouro.
+                    </p>
+                </div>
+                
+                <h3 class="font-serif text-accent" style="font-size: 2rem; margin-bottom: 1.5rem;">Nossos Valores</h3>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 1.5rem;">
+                    <li style="display: flex; flex-direction: column;">
+                        <span class="text-accent" style="font-weight: 800; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;">Sustentabilidade</span>
+                        <span style="color: var(--text-muted); font-size: 0.95rem;">Promover práticas que equilibrem desenvolvimento econômico e a máxima preservação ambiental.</span>
+                    </li>
+                    <li style="display: flex; flex-direction: column;">
+                        <span class="text-accent" style="font-weight: 800; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;">Responsabilidade</span>
+                        <span style="color: var(--text-muted); font-size: 0.95rem;">Agir com compromisso inabalável pela natureza e pelas gerações futuras.</span>
+                    </li>
+                    <li style="display: flex; flex-direction: column;">
+                        <span class="text-accent" style="font-weight: 800; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;">Transparência & Inclusão</span>
+                        <span style="color: var(--text-muted); font-size: 0.95rem;">Comunicar claramente nossas ações e envolver toda a comunidade em nossas iniciativas vitais.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="reveal" style="flex: 1; min-width: 300px; position: relative;">
+                <img src="img/FotoSecundaria.png" alt="Sobre a ONG Mundo Verde" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(10%); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1);">
+            </div>
+        </section>
+
+        <!-- Como Ajudar -->
+        <section class="section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <h2 class="section-title">Como Você Pode<br><span class="font-serif text-accent">Ajudar</span></h2>
+                    <p>Existem muitas formas de contribuir com a Mundo Verde. Faça parte do nosso movimento.</p>
+                </div>
+                
+                <div class="card-grid">
+                    <div class="premium-card reveal">
+                        <div class="card-icon">🛍️</div>
+                        <h3 class="card-title">Comprar Produtos</h3>
+                        <p>Adquira nossos produtos sustentáveis e ajude a financiar nossas iniciativas locais.</p>
+                    </div>
+                    <div class="premium-card reveal" style="transition-delay: 0.1s;">
+                        <div class="card-icon">🤝</div>
+                        <h3 class="card-title">Voluntariar</h3>
+                        <p>Participe dos nossos projetos, mutirões de limpeza e campanhas educacionais.</p>
+                    </div>
+                    <div class="premium-card reveal" style="transition-delay: 0.2s;">
+                        <div class="card-icon">🌱</div>
+                        <h3 class="card-title">Práticas Diárias</h3>
+                        <p>Adote práticas sustentáveis no seu dia a dia e inspire pessoas ao seu redor.</p>
+                    </div>
+                </div>
+                
+                <div class="reveal" style="text-align: center; margin-top: 5rem;">
+                    <a href="produtos.html" class="btn-premium">Ver Nossos Produtos</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

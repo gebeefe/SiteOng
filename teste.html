@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Mundo Verde</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="header-container"></div>
+    
+    <main class="container my-5 p-4">
+        <div class="card">
+            <div class="card-body">
+                <h2>Teste de Funcionalidades</h2>
+                <hr>
+                
+                <h5>📦 Produtos Carregados:</h5>
+                <pre id="produtos-info"></pre>
+                
+                <h5>📰 Novidades Carregadas:</h5>
+                <pre id="novidades-info"></pre>
+                
+                <h5>💾 Status do LocalStorage:</h5>
+                <pre id="storage-info"></pre>
+                
+                <h5>👤 Usuário Atual:</h5>
+                <pre id="user-info"></pre>
+                
+                <hr>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-primary" onclick="testarCadastro()">Teste: Cadastrar Usuário</button>
+                    <button class="btn btn-success" onclick="testarLogin()">Teste: Login</button>
+                    <button class="btn btn-warning" onclick="testarCarrinho()">Teste: Adicionar ao Carrinho</button>
+                    <button class="btn btn-danger" onclick="limparTeste()">Limpar Dados de Teste</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        function renderTesteInfo() {
+            // Produtos
+            document.getElementById('produtos-info').textContent = 
+                JSON.stringify(appData.productos, null, 2);
+            
+            // Novidades
+            document.getElementById('novidades-info').textContent = 
+                JSON.stringify(appData.novidades, null, 2);
+            
+            // Storage
+            const storagInfo = {
+                users: StorageManager.getUsers().length,
+                carts: Object.keys(JSON.parse(localStorage.getItem('carts') || '{}')).length,
+                session: !!localStorage.getItem('current_session')
+            };
+            document.getElementById('storage-info').textContent = 
+                JSON.stringify(storagInfo, null, 2);
+            
+            // User
+            const userAtual = StorageManager.getCurrentUser();
+            document.getElementById('user-info').textContent = 
+                userAtual ? JSON.stringify(userAtual, null, 2) : 'Nenhum usuário logado';
+        }
+        
+        function testarCadastro() {
+            const email = 'teste@' + Date.now() + '.com';
+            const userId = StorageManager.addUser('Usuário Teste', email, 'teste123');
+            alert('Usuário cadastrado com ID: ' + userId + '\nEmail: ' + email);
+            renderTesteInfo();
+        }
+        
+        function testarLogin() {
+            const users = StorageManager.getUsers();
+            if (users.length === 0) {
+                alert('Nenhum usuário cadastrado. Clique em "Teste: Cadastrar Usuário" primeiro.');
+                return;
+            }
+            const user = users[0];
+            StorageManager.setCurrentUser(user.id, user.nome, user.email);
+            alert('Login bem-sucedido como: ' + user.nome);
+            renderTesteInfo();
+        }
+        
+        function testarCarrinho() {
+            const user = StorageManager.getCurrentUser();
+            if (!user) {
+                alert('Faça login primeiro.');
+                return;
+            }
+            
+            StorageManager.addToCart(user.userId, 1, 2);
+            alert('2 unidades do produto 1 adicionadas ao carrinho');
+            renderTesteInfo();
+        }
+        
+        function limparTeste() {
+            if (confirm('Limpar todos os dados de teste (users, carts, session)?')) {
+                localStorage.clear();
+                alert('Dados limpos!');
+                renderTesteInfo();
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', renderTesteInfo);
+    </script>
+</body>
+</html>

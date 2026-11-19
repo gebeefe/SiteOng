@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho - Mundo Verde</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="background: var(--bg-light); color: var(--bg-dark);">
+    <div id="header-container" style="background: var(--bg-dark);"></div>
+    
+    <main style="padding-top: var(--nav-height); min-height: calc(100vh - var(--nav-height)); display: flex; flex-direction: column;">
+        <section class="section" style="padding: 4rem 5vw; flex-grow: 1;">
+            <div class="container reveal">
+                <h1 class="font-serif text-accent" style="font-size: 3rem; margin-bottom: 2rem;">Seu Carrinho</h1>
+                
+                <div id="carrinho-container">
+                    <!-- Carrinho será renderizado aqui -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        function renderCarrinho() {
+            const container = document.getElementById('carrinho-container');
+            const currentUser = StorageManager.getCurrentUser();
+            
+            if (!currentUser) {
+                container.innerHTML = `
+                    <div style="padding: 3rem; text-align: center; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1);">
+                        <p style="margin-bottom: 1rem;">Você precisa estar logado para acessar seu carrinho.</p>
+                        <a href="login.html" class="btn-premium" style="color: var(--bg-dark); border-color: var(--bg-dark);">Fazer Login</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            const carrinho = StorageManager.getCart(currentUser.userId);
+            
+            if (carrinho.length === 0) {
+                container.innerHTML = `
+                    <div style="padding: 3rem; text-align: center; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1);">
+                        <p style="margin-bottom: 1rem;">Seu carrinho está vazio.</p>
+                        <a href="produtos.html" class="btn-premium" style="color: var(--bg-dark); border-color: var(--bg-dark);">Ver Produtos</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            let total = 0;
+            const itemsHtml = carrinho.map(item => {
+                const subtotal = item.quantidade * item.preco_unitario;
+                total += subtotal;
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; background: white; border-bottom: 1px solid rgba(0,0,0,0.1); gap: 1rem; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 1.5rem;">
+                            <img src="${Utils.escapeHtml(item.imagem_url)}" alt="${Utils.escapeHtml(item.nome)}" 
+                                 style="width: 80px; height: 80px; object-fit: cover; background: #eee;">
+                            <div>
+                                <strong style="font-size: 1.2rem; display: block;">${Utils.escapeHtml(item.nome)}</strong>
+                                <small style="color: var(--text-muted);">${item.quantidade}x ${Utils.formatPrice(item.preco_unitario)}</small>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 2rem;">
+                            <span style="font-family: var(--font-serif); font-size: 1.5rem; font-weight: bold;">${Utils.formatPrice(subtotal)}</span>
+                            <button onclick="removerDoCarrinho(${item.item_id})" style="background: transparent; border: none; color: #ff5555; cursor: pointer; text-decoration: underline; font-weight: bold; text-transform: uppercase; font-size: 0.8rem;">Remover</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = `
+                <div style="box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1);">
+                    ${itemsHtml}
+                    <div style="padding: 2rem; background: white; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <h3 style="font-size: 2rem;">Total: <span class="text-accent">${Utils.formatPrice(total)}</span></h3>
+                        <div style="display: flex; gap: 1rem;">
+                            <a href="produtos.html" class="btn-premium btn-light" style="border: 1px solid rgba(0,0,0,0.2);">Continuar Comprando</a>
+                            <button class="btn-premium" style="background: var(--bg-dark); color: var(--accent); border-color: var(--bg-dark);" type="button" onclick="finalizarCompra()">Finalizar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            setTimeout(() => Utils.initScrollAnimations(), 100);
+        }
+        
+        function removerDoCarrinho(itemId) {
+            const currentUser = StorageManager.getCurrentUser();
+            if (currentUser) {
+                StorageManager.removeFromCart(currentUser.userId, itemId);
+                renderCarrinho();
+                Utils.showMessage('Produto removido do carrinho', 'info');
+            }
+        }
+        
+        function finalizarCompra() {
+            const currentUser = StorageManager.getCurrentUser();
+            if (currentUser) {
+                alert('Funcionalidade de checkout será implementada em breve!');
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', renderCarrinho);
+    </script>
+</body>
+</html>

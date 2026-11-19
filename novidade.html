@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novidades - Mundo Verde</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-topo"></div>
+    <div id="header-container"></div>
+    
+    <main>
+        <section class="section" style="padding-top: 150px; padding-bottom: 5rem;">
+            <div class="container reveal">
+                <h1 class="text-oversized">Últimas<br><span class="font-serif text-accent">Notícias</span></h1>
+            </div>
+        </section>
+
+        <section class="section section-light" style="padding-top: 5rem;">
+            <div class="container">
+                <div id="novidades-container" class="card-grid">
+                    <!-- Novidades serão renderizadas aqui -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        function renderNovidades() {
+            const container = document.getElementById('novidades-container');
+            
+            if (appData.novidades.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem;">Nenhuma novidade disponível no momento.</div>';
+                return;
+            }
+            
+            container.innerHTML = appData.novidades.map((novidade, index) => `
+                <div class="premium-card reveal" style="transition-delay: ${index * 0.1}s;">
+                    <div style="font-family: var(--font-serif); color: var(--accent); font-size: 0.9rem; margin-bottom: 1rem; text-transform: uppercase;">
+                        Novidade #${novidade.id}
+                    </div>
+                    <h3 class="card-title" style="color: var(--bg-dark); font-size: 1.5rem; margin-bottom: 1rem;">${Utils.escapeHtml(novidade.titulo)}</h3>
+                    <p style="color: var(--text-muted);">${Utils.escapeHtml(novidade.conteudo)}</p>
+                </div>
+            `).join('');
+            
+            setTimeout(() => Utils.initScrollAnimations(), 100);
+        }
+        
+        document.addEventListener('DOMContentLoaded', renderNovidades);
+    </script>
+</body>
+</html>

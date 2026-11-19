@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos - Mundo Verde</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-topo"></div>
+    <div id="header-container"></div>
+    
+    <main>
+        <section class="section" style="padding-top: 150px; padding-bottom: 5rem;">
+            <div class="container reveal">
+                <h1 class="text-oversized">Nossos<br><span class="font-serif text-accent">Produtos</span></h1>
+                <p style="font-size: 1.2rem; max-width: 600px; margin-top: 2rem;">Conheça os produtos sustentáveis da ONG Mundo Verde. Toda a renda é revertida para nossos projetos de preservação.</p>
+            </div>
+        </section>
+
+        <section class="section section-light" style="padding-top: 5rem;">
+            <div class="container">
+                <div id="produtos-container" class="card-grid">
+                    <!-- Produtos serão renderizados aqui pelo JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        function renderProdutos() {
+            const container = document.getElementById('produtos-container');
+            const currentUser = StorageManager.getCurrentUser();
+            
+            if (appData.productos.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem;">Nenhum produto disponível no momento.</div>';
+                return;
+            }
+            
+            container.innerHTML = appData.productos.map((produto, index) => `
+                <div class="premium-card reveal" style="transition-delay: ${index * 0.1}s; padding: 0; display: flex; flex-direction: column;">
+                    <div class="product-img-wrap">
+                        <img src="${Utils.escapeHtml(produto.imagem_url)}" alt="${Utils.escapeHtml(produto.nome)}" class="product-img">
+                    </div>
+                    <div style="padding: 2rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--bg-dark);">${Utils.escapeHtml(produto.nome)}</h3>
+                            <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">${Utils.escapeHtml(produto.descricao)}</p>
+                        </div>
+                        
+                        <div>
+                            <div class="product-price" style="color: var(--bg-dark); font-weight: 800;">${Utils.formatPrice(produto.preco_unitario)}</div>
+                            ${currentUser ? `
+                                <form onsubmit="adicionarAoCarrinho(event, ${produto.id})" style="display: flex; gap: 1rem; align-items: center;">
+                                    <input type="number" id="quantidade-${produto.id}" value="1" min="1" required style="width: 60px; padding: 0.5rem; border: 1px solid rgba(0,0,0,0.1); background: transparent; text-align: center;">
+                                    <button class="btn-premium" style="padding: 0.5rem 1rem; font-size: 0.8rem; width: 100%; border-color: var(--bg-dark); color: var(--bg-dark);" type="submit">Adicionar</button>
+                                </form>
+                            ` : `
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                    <a href="login.html" style="color: var(--bg-dark); font-weight: bold;">Faça login</a> para adicionar ao carrinho.
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Re-trigger scroll animations for newly added elements
+            setTimeout(() => Utils.initScrollAnimations(), 100);
+        }
+        
+        function adicionarAoCarrinho(event, productId) {
+            event.preventDefault();
+            const currentUser = StorageManager.getCurrentUser();
+            
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const quantidade = parseInt(document.getElementById(`quantidade-${productId}`).value);
+            if (StorageManager.addToCart(currentUser.userId, productId, quantidade)) {
+                Utils.showMessage('Produto adicionado ao carrinho com sucesso!', 'success');
+                document.getElementById(`quantidade-${productId}`).value = 1;
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', renderProdutos);
+    </script>
+</body>
+</html>

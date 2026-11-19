@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Mundo Verde</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="header-container"></div>
+    
+    <div class="auth-container">
+        <div class="auth-visual"></div>
+        <div class="auth-form-wrap">
+            <div class="auth-box reveal" style="padding: 2rem 0;">
+                <h2 class="auth-title" style="font-size: 2.5rem;">Crie sua<br><span class="font-serif text-accent">Conta</span></h2>
+                <p class="auth-subtitle">Junte-se ao movimento Mundo Verde.</p>
+                
+                <div id="mensagem-container"></div>
+                
+                <form id="form-cadastro" onsubmit="handleCadastro(event)">
+                    <div class="form-group">
+                        <label for="nome" class="form-label">Nome Completo</label>
+                        <input class="form-control" type="text" id="nome" name="nome" placeholder="Seu nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input class="form-control" type="email" id="email" name="email" placeholder="Seu email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="senha" class="form-label">Senha</label>
+                        <input class="form-control" type="password" id="senha" name="senha" placeholder="Crie sua senha" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmar-senha" class="form-label">Confirmar Senha</label>
+                        <input class="form-control" type="password" id="confirmar-senha" name="confirmar_senha" placeholder="Confirme sua senha" required>
+                    </div>
+                    <button class="btn-premium btn-submit" type="submit">Cadastrar</button>
+                </form>
+                
+                <p style="margin-top: 2rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+                    Já tem uma conta? <a href="login.html" style="color: var(--accent); text-decoration: none; font-weight: bold;">Faça Login</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        function handleCadastro(event) {
+            event.preventDefault();
+            
+            const nome = document.getElementById('nome').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const senha = document.getElementById('senha').value;
+            const confirmarSenha = document.getElementById('confirmar-senha').value;
+            const mensagemContainer = document.getElementById('mensagem-container');
+            
+            if (!nome || !email || !senha || !confirmarSenha) {
+                mostrarMensagem('Todos os campos são obrigatórios.', 'danger', mensagemContainer);
+                return;
+            }
+            
+            if (senha !== confirmarSenha) {
+                mostrarMensagem('As senhas não coincidem!', 'danger', mensagemContainer);
+                return;
+            }
+            
+            if (senha.length < 6) {
+                mostrarMensagem('A senha deve ter pelo menos 6 caracteres.', 'warning', mensagemContainer);
+                return;
+            }
+            
+            if (StorageManager.getUserByEmail(email)) {
+                mostrarMensagem('Este e-mail já está cadastrado. Tente fazer login ou use outro e-mail.', 'warning', mensagemContainer);
+                return;
+            }
+            
+            try {
+                StorageManager.addUser(nome, email, senha);
+                mostrarMensagem('Cadastro realizado com sucesso! Redirecionando para login...', 'success', mensagemContainer);
+                
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            } catch (error) {
+                mostrarMensagem('Erro ao cadastrar. Tente novamente.', 'danger', mensagemContainer);
+            }
+        }
+        
+        function mostrarMensagem(mensagem, tipo, container) {
+            container.innerHTML = `
+                <div class="alert alert-${tipo}" style="margin-bottom: 1.5rem; text-align: center; font-size: 0.9rem;">
+                    ${Utils.escapeHtml(mensagem)}
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
